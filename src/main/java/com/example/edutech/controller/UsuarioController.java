@@ -1,10 +1,19 @@
 package com.example.edutech.controller;
-import com.example.edutech.modelo.Usuario;
-import com.example.edutech.servicio.UsuarioServicio;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.edutech.modelo.Usuario;
+import com.example.edutech.servicio.UsuarioServicio;
 
 
 @RestController
@@ -16,28 +25,28 @@ public class UsuarioController {
 
     @GetMapping
     public List<Usuario> ListaUsuarios(){
-        return usuarioServicio.getRol();
+        return usuarioServicio.getUsuarios();
     }
 
     @PostMapping
     public Usuario agregarUsuario(@RequestBody Usuario usuario) {
-        return usuarioServicio.saveUsuario(usuario); 
+        return usuarioServicio.saveUsuarios(usuario); 
 
     }
 
     @GetMapping("/{id}")
-    public Usuario buscUsuario(@PathVariable long id){
-        return usuarioServicio.getId(id);
+    public Usuario buscUsuario(@PathVariable int id){
+        return usuarioServicio.getUsuarioId(id);
     }
 
     @PutMapping("/{id}")
     public Usuario actualizarUsuario(@PathVariable long idU,@RequestBody Usuario usuario) {
-        return usuarioServicio.updateLibro(usuario);
+        return usuarioServicio.updateUsuario(usuario);
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarUsuario(@PathaVariable log idU){
-        retun UsuarioServicio.deleteUsuario(idU);
+    public String eliminarUsuario(@PathVariable int id){
+        return usuarioServicio.daleteUsuario(id);
     }
 
 
