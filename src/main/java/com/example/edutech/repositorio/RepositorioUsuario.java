@@ -1,11 +1,10 @@
 package com.example.edutech.repositorio;
-import com.example.edutech.modelo.Usuario;
-import org.springframework.stereotype.Repository;
-
-
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import com.example.edutech.modelo.Usuario;
 
 
 @Repository
@@ -52,24 +51,25 @@ public class RepositorioUsuario {
                 idPosicion = i;
             }
         }
+
+        Usuario usuario1 = new Usuario();
+        usuario1.setId(id);
+        usuario1.setRol(user.getRol());
+        usuario1.setNombre(user.getNombre());
+        usuario1.setEmail(user.getEmail());
+
+        listaUsuarios.set(idPosicion, usuario1);
+        return usuario1;
     }
 
-    Usuario usuario1 = new Usuario();
-    usuario1.setId(id);
-    usuario1.setRol(user.getRol());
-    usuario1.setNombre(user.getNombre());
-    usuario1.setEmail(User.getEmail());
-
-    listaUsuarios.set(idPosicion, usuario1);
-    return usuario1;
+    
 
 
     public void eliminar(int id){
-        Usuario usuario = buscarPorNombreUsuario(nombre){
-            if (usuario != null){
-                listaUsuarios.remove(usuario);
-                
-            }
+        Usuario usuario = buscarIdUsuario(id);
+        if (usuario != null){
+            listaUsuarios.remove(usuario);
+
         }
     }
 
