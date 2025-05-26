@@ -41,6 +41,7 @@ public class RepositorioUsuario {
         return user;
     }
 
+   
     public Usuario actualizarUsuario(Usuario user){
         int id = 0;
         int idPosicion = 0;
