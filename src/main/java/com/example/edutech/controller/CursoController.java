@@ -1,5 +1,6 @@
 package com.example.edutech.controller;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,42 +11,52 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.edutech.modelo.Usuario;
-import com.example.edutech.servicio.UsuarioServicio;
+import com.example.edutech.modelo.Curso;
+import com.example.edutech.servicio.CursoServicio;
+
+
 
 
 @RestController
-@RequestMapping("/api/v1/Usuarios")
-public class UsuarioController {
-    
+@RequestMapping("/api/v1/Cursos")
+public class CursoController {
     @Autowired
-    private UsuarioServicio usuarioServicio;
+    private CursoServicio cursoServicio;
 
     @GetMapping
-    public List<Usuario> ListaUsuarios(){
-        return usuarioServicio.getUsuarios();
+    public List<Curso> listaCursos(){
+        return cursoServicio.geCursos();
     }
 
     @PostMapping
-    public Usuario agregarUsuario(@RequestBody Usuario usuario) {
-        return usuarioServicio.saveUsuarios(usuario); 
-
+    public Curso agregarCurso(@RequestBody Curso curso){
+        return cursoServicio.saveCursos(curso);
     }
 
     @GetMapping("/{id}")
-    public Usuario buscUsuario(@PathVariable int id){
-        return usuarioServicio.getUsuarioId(id);
+    public Curso buscCurso(@PathVariable int id){
+        return cursoServicio.getCursoId(id);
     }
 
     @PutMapping("/{id}")
-    public Usuario actualizarUsuario(@PathVariable long id,@RequestBody Usuario usuario) {
-        return usuarioServicio.updateUsuario(usuario);
+    public Curso actualizarCurso(@PathVariable long id, @RequestBody Curso curso){
+        return cursoServicio.updateCurso(curso);
     }
 
     @DeleteMapping("/{id}")
-    public String eliminarUsuario(@PathVariable int id){
-        return usuarioServicio.daleteUsuario(id);
+    public String eliminarCurso(@PathVariable int id){
+        return cursoServicio.deleteCurso(id);
     }
+
+    
+    
+    
+
+    
+    
+
+
+
 
 
 
