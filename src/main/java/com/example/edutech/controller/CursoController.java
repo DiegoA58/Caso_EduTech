@@ -1,7 +1,10 @@
 package com.example.edutech.controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,16 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.edutech.modelo.Curso;
 import com.example.edutech.servicio.CursoServicio;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-
-
 
 @RestController
 @RequestMapping("/api/v1/Cursos")
@@ -64,8 +63,16 @@ public class CursoController {
         @ApiResponse(responseCode = "404", description = "Curso no encontrado",
                     content = @Content)
     })
-    public Curso buscCurso(@PathVariable int id){
-        return cursoServicio.getCursoId(id);
+    public EntityModel<Curso> buscCurso(@PathVariable int id){
+        Curso curso = cursoServicio.getCursoId(id);
+        
+        EntityModel<Curso> recurso = EntityModel.of(curso);
+        
+        recurso.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CursoController.class).buscCurso(id)).withSelfRel());
+        recurso.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CursoController.class).listaCursos()).withRel("listaCursos"));
+        recurso.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CursoController.class).agregarCurso(curso)).withRel("agregarCurso"));
+        
+        return recurso;
     }
 
     @PutMapping("/{id}")
@@ -73,7 +80,7 @@ public class CursoController {
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Curso actualizado",
                     content = @Content(schema = @Schema(implementation = Curso.class))),
-        @ApiResponse(responseCode = "404", description = "Cursoo no encontrado",
+        @ApiResponse(responseCode = "404", description = "Curso no encontrado",
                     content = @Content),
         @ApiResponse(responseCode = "400", description = "Datos inválidos",
                     content = @Content)
@@ -84,7 +91,7 @@ public class CursoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary="Eliminar los Cursos", description="Operacion para eliminar los Cursos")
-     @ApiResponses({
+    @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Curso eliminado",
                     content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "404", description = "Curso no encontrado",
@@ -93,17 +100,4 @@ public class CursoController {
     public String eliminarCurso(@PathVariable int id){
         return cursoServicio.deleteCurso(id);
     }
-
-    
-    
-    
-
-    
-    
-
-
-
-
-
-
 }

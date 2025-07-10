@@ -1,7 +1,10 @@
 package com.example.edutech.controller;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,14 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.edutech.modelo.Usuario;
 import com.example.edutech.servicio.UsuarioServicio;
 
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 
 @RestController
 @RequestMapping("/api/v1/Usuarios")
@@ -30,6 +31,7 @@ public class UsuarioController {
     
     @Autowired
     private UsuarioServicio usuarioServicio;
+
     @GetMapping
     @Operation(summary="Lista de todos los Usuarios", description="Operaciones relacionadas con los Usuarios")
     @ApiResponses({
@@ -38,7 +40,6 @@ public class UsuarioController {
         @ApiResponse(responseCode = "204", description = "No hay usuarios registrados",
                     content = @Content)
     })
-                              
     public List<Usuario> ListaUsuarios(){
         return usuarioServicio.getUsuarios();
     }
@@ -53,7 +54,6 @@ public class UsuarioController {
     })
     public Usuario agregarUsuario(@RequestBody Usuario usuario) {
         return usuarioServicio.saveUsuarios(usuario); 
-
     }
 
     @GetMapping("/{id}")
@@ -64,8 +64,16 @@ public class UsuarioController {
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
                     content = @Content)
     })
-    public Usuario buscUsuario(@PathVariable int id){
-        return usuarioServicio.getUsuarioId(id);
+    public EntityModel<Usuario> buscUsuario(@PathVariable int id){
+        Usuario usuario = usuarioServicio.getUsuarioId(id);
+        
+        EntityModel<Usuario> recurso = EntityModel.of(usuario);
+        
+        recurso.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).buscUsuario(id)).withSelfRel());
+        recurso.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).ListaUsuarios()).withRel("listaUsuarios"));
+        recurso.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UsuarioController.class).agregarUsuario(usuario)).withRel("agregarUsuario"));
+        
+        return recurso;
     }
 
     @PutMapping("/{id}")
@@ -78,8 +86,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Datos inválidos",
                     content = @Content)
     })
-
-    public Usuario actualizarUsuario(@PathVariable long id,@RequestBody Usuario usuario) {
+    public Usuario actualizarUsuario(@PathVariable long id, @RequestBody Usuario usuario) {
         return usuarioServicio.updateUsuario(usuario);
     }
 
@@ -91,11 +98,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
                     content = @Content)
     })
-    
     public String eliminarUsuario(@PathVariable int id){
         return usuarioServicio.daleteUsuario(id);
     }
-
-
-
 }
